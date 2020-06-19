@@ -1,4 +1,5 @@
 <?php
+//TODO: Checking of sector and other prerequisites
 $start = microtime(TRUE);
 
 function firstCharacter($word){
@@ -87,6 +88,40 @@ function findID($haystack){
   return $id;
 }
 
+function findSector($haystack){
+  if (!empty($haystack)){
+    if(stristr($haystack,"buntis") !== false || firstCharacter($haystack) == "A") {
+      $sector = "B - Buntis";
+    } else if(stristr($haystack,"tanda") !== false || firstCharacter($haystack) == "B") {
+      $birthDate = explode("/", $data[7]);
+      $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[0], $birthDate[1], $birthDate[2]))) > date("md")
+      ? ((date("Y") - $birthDate[2]) - 1)
+      : (date("Y") - $birthDate[2]));
+      if ($age > 59){
+        $sector = "$age - A - Nakakatanda";
+      } else {
+        $sector = "W";
+      }           
+      $sector = "A - Nakakatanda";
+    } else if(stristr($haystack,"suso") !== false) {
+      if ($kasarian == "M"){
+        $sector = "W";
+      } else {
+        $sector = "C - Nagpapasusong Ina";
+      }     
+    } else if(stristr($haystack,"pwd") !== false) {
+      $sector = "D - PWD";
+    } else if(stristr($haystack,"solo") !== false) {
+      $sector = "E - Solo Parent";
+    } else if(stristr($haystack,"homeless") !== false || stristr($haystack,"tirahan") !== false) {
+      $sector = "F - Walang Tirahan";
+    }
+  } else {
+    $sector = "W";
+  }
+  return $sector;
+}
+
 if ($_POST){
   header("Content-type: text/csv");
   header("Content-disposition: attachment; filename = Sanitized_Data.csv");
@@ -128,7 +163,9 @@ if ($_POST){
           } else if ($c == 10){ //sektor
             if ($data[$c] == "") {
               $data[$c] = "W";
-            } 
+            } else if ($data[$c] == "") {
+              $data[$c] = findSector($data[$c]);
+            }
           } else if ($c == 11){ //kondisyon ng kalusugan
             if ($data[$c] == "") {
               $data[$c] = 0;
@@ -193,10 +230,8 @@ if ($_POST){
     }
     fclose($handle);
     ob_flush();
-    exit();
   }
   $end = microtime(TRUE);
-  header("Location: success.php?time=$end");
 }  
 ?>
 <!DOCTYPE html>
