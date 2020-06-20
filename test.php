@@ -116,5 +116,57 @@ $string = "02/11/92";
   //   : (date("Y") - $birthDate[2]));
   // echo "Age is:" . $age;
 
-  var_dump(strlen("test tetsts tes et"))
+  // var_dump(strlen("test tetsts tes et"))
+
+  function firstCharacter($word){
+    return substr(strtoupper($word), 0, 1);
+  }
+
+  function replaceSpecialCharacter($replacement,$word){
+    $word = preg_replace('/[^A-Za-z0-9-]/', '', $word);
+    return str_replace("-",$replacement,$word);
+  }
+
+  function findSector($birthday,$kasarian,$haystack){
+    if (!empty($haystack)){
+      if(stristr($haystack,"buntis") !== false || firstCharacter($haystack) == "B") {
+        $sector = "B - Buntis";
+      } else if(stristr($haystack,"tanda") !== false || firstCharacter($haystack) == "A") {
+        $birthDate = explode("/", $birthday);
+        $arrCount = count($birthDate);
+        if ($arrCount >= 3){
+          $birthDate = array_values(array_filter($birthDate));
+          $age = (date("md", date("U", mktime(0, 0, 0, $birthDate[0], $birthDate[1], $birthDate[2]))) > date("md")
+          ? ((date("Y") - $birthDate[2]) - 1)
+          : (date("Y") - $birthDate[2]));          
+        } else if ($arrCount < 3){
+          $age = date("Y") - $birthDate[1];
+        }
+        if ($age > 59){
+          $sector = "$age - A - Nakakatanda";
+        } else {
+          $sector = "$age - W";
+        }           
+      } else if(stristr($haystack,"suso") !== false || firstCharacter($haystack) == "C") {
+        if ($kasarian == "M"){
+          $sector = "W";
+        } else {
+          $sector = "C - Nagpapasusong Ina";
+        }     
+      } else if(stristr($haystack,"pwd") !== false || firstCharacter($haystack) == "D") {
+        $sector = "D - PWD";
+      } else if(stristr($haystack,"solo") !== false || firstCharacter($haystack) == "E") {
+        $sector = "E - Solo Parent";
+      } else if(stristr($haystack,"homeless") !== false || stristr($haystack,"tirahan") !== false || firstCharacter($haystack) == "F") {
+        $sector = "F - Walang Tirahan";
+      } else {
+        $sector = "W";
+      }
+    } else {
+      $sector = "W";
+    }
+    return $sector;
+  }
+  echo findSector("08/04/1971","F","A");
+  // echo findSector(replaceSpecialCharacter("/","05-04-1970"),"A");
 ?>
