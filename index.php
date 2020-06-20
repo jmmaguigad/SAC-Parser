@@ -1,5 +1,4 @@
 <?php
-//TODO: Checking of sector and other prerequisites
 $start = microtime(TRUE);
 
 function firstCharacter($word){
@@ -139,17 +138,32 @@ if ($_POST){
   header("Content-disposition: attachment; filename = Sanitized_Data.csv");
   $fp = fopen('php://output', 'w');
   $handle = fopen($_FILES["file"]["tmp_name"], "r");
-
+  // arrays used in storing data
+  $arrayUnique = array();
+  $arrayDups = array();
+  // storage of barcode for household head
+  $hhbarcode = "";
   if (($handle) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
       $num = count($data);
-        // echo "<p> $num fields in line $row: <br /></p>\n";
-        // if ($row == 1) { $row++; continue; }
         for ($c=0; $c < $num; $c++) {
           if ($c == 0){ //row indicator
-            
+            if (empty($data[0])) {
+              if(stristr($haystack,"puno") !== false || firstCharacter($haystack) == "1"){
+                $data[$c] = "H";
+              } else {
+                $data[$c] = "M";
+              }
+            }
+            if ($data[$c] == "H"){
+              $hhbarcode = $data[1];
+            }
           }else if ($c == 1){ //barcode number
-            $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$data[$c]);
+            if (!empty($data[1])){
+              $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$data[$c]);
+            } else {
+              $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$hhbarcode);
+            }
           } else if ($c == 6){
 
           } else if ($c == 7){ //date
