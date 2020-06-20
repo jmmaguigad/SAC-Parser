@@ -23,17 +23,21 @@ function formatBarcodeNumber($psgc,$barcode){
 // Date
 function createDate($date){
   $date = preg_replace('#/+#','/',str_replace("-","/",$date));
-  if (strlen($date) < 9){
-    $twodigits = substr($date,strlen($date)-(strlen($date)+2),2);
-    $remainingdigits = trim(str_replace($twodigits,"",$date));
-    if ($twodigits > 20 && $twodigits < 100){
-      $appenddigits = 19;
+  if (!empty($date)){
+    if (strlen($date) < 9){
+      $twodigits = substr($date,strlen($date)-(strlen($date)+2),2);
+      $remainingdigits = trim(str_replace($twodigits,"",$date));
+      if ($twodigits > 20 && $twodigits < 100){
+        $appenddigits = 19;
+      } else {
+        $appenddigits = 20;
+      }
+      $returnedDate = formatDate($remainingdigits,$appenddigits,$twodigits);
     } else {
-      $appenddigits = 20;
-    }
-    $returnedDate = formatDate($remainingdigits,$appenddigits,$twodigits);
+      $returnedDate = $date;
+    }    
   } else {
-    $returnedDate = $date;
+    $returnedDate = "";
   }
   return $returnedDate;
 }
@@ -133,6 +137,35 @@ function findSector($birthday,$kasarian,$haystack){
   return $sector;
 }
 
+function findRelHH($haystack){
+  if (!empty($haystack)){
+    if(stristr($haystack,"puno") !== false || stristr($haystack,"pamilya") !== false || firstCharacter($haystack) == "1") {
+      $relHH = "1 - Puno ng Pamilya";
+    } else if(stristr($haystack,"asawa") !== false || stristr($haystack,"mister") !== false || stristr($haystack,"misis") !== false ||  stristr($haystack,"live") !== false || firstCharacter($haystack) == "2" || firstCharacter($haystack) == "2") {
+      $relHH = "2 - Asawa";
+    } else if(stristr($haystack,"anak") !== false || firstCharacter($haystack) == "3") {
+      $relHH = "3 - Anak";
+    } else if (stristr($haystack,"kapatid") !== false || firstCharacter($haystack) == "4" || stristr($haystack,"brother") !== false || stristr($haystack,"sister") !== false) {
+      if (stristr($haystack,"law") !== false) {
+        $relHH = "8 - Other Relative";
+      }else{
+        $relHH = "4 - Kapatid";
+      }
+    } else if (stristr($haystack,"bayaw") !== false || stristr($haystack,"hipag") !== false || firstCharacter($haystack) == "5") {
+      $relHH = "5 - Bayaw o Hipag";
+    } else if (stristr($haystack,"apo") !== false || (stristr($haystack,"grand") !== false && (stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false))) {
+      $relHH = "6 - Apo";
+    } else if (stristr($haystack,"tatay") !== false || stristr($haystack,"nanay") !== false || (stristr($haystack,"law") !== false && (stristr($haystack,"mother") !== false || stristr($haystack,"father") !== false))) {
+      $relHH = "7 - Tatay/Nanay";
+    } else {
+      $relHH = "8 - Other Relative";
+    }
+  } else {
+    $relHH = "8 - Other Relative";
+  }
+  return $relHH;
+}
+
 if ($_POST){
   header("Content-type: text/csv");
   header("Content-disposition: attachment; filename = Sanitized_Data.csv");
@@ -165,7 +198,7 @@ if ($_POST){
               $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$hhbarcode);
             }
           } else if ($c == 6){
-
+            $data[$c] = findRelHH($data[$c]);
           } else if ($c == 7){ //date
             $data[$c] = createDate($data[$c]);
           } else if ($c == 9){ //Trabaho and other dependencies
