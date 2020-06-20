@@ -122,10 +122,10 @@ $string = "02/11/92";
     return substr(strtoupper($word), 0, 1);
   }
 
-  function replaceSpecialCharacter($replacement,$word){
-    $word = preg_replace('/[^A-Za-z0-9-]/', '', $word);
-    return str_replace("-",$replacement,$word);
-  }
+  // function replaceSpecialCharacter($replacement,$word){
+  //   $word = preg_replace('/[^A-Za-z0-9-]/', '', $word);
+  //   return str_replace("-",$replacement,$word);
+  // }
 
   function findSector($birthday,$kasarian,$haystack){
     if (!empty($haystack)){
@@ -167,6 +167,36 @@ $string = "02/11/92";
     }
     return $sector;
   }
-  echo findSector("08/04/1971","F","A");
+
+  function findRelHH($haystack){
+    if (!empty($haystack)){
+      if(stristr($haystack,"puno") !== false || stristr($haystack,"pamilya") !== false || firstCharacter($haystack) == "1") {
+        $relHH = "1 - Puno ng Pamilya";
+      } else if(stristr($haystack,"asawa") !== false || stristr($haystack,"mister") !== false || stristr($haystack,"misis") !== false ||  stristr($haystack,"live") !== false || firstCharacter($haystack) == "2" || firstCharacter($haystack) == "2") {
+        $relHH = "2 - Asawa";
+      } else if(stristr($haystack,"anak") !== false || firstCharacter($haystack) == "3") {
+        $relHH = "3 - Anak";
+      } else if (stristr($haystack,"kapatid") !== false || firstCharacter($haystack) == "4" || stristr($haystack,"brother") !== false || stristr($haystack,"sister") !== false) {
+        if (stristr($haystack,"law") !== false) {
+          $relHH = "8 - Other Relative";
+        }else{
+          $relHH = "4 - Kapatid";
+        }
+      } else if (stristr($haystack,"bayaw") !== false || stristr($haystack,"hipag") !== false || firstCharacter($haystack) == "5") {
+        $relHH = "5 - Bayaw o Hipag";
+      } else if (stristr($haystack,"apo") !== false || (stristr($haystack,"grand") !== false && (stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false))) {
+        $relHH = "6 - Apo";
+      } else if (stristr($haystack,"tatay") !== false || stristr($haystack,"nanay") !== false || (stristr($haystack,"law") !== false && (stristr($haystack,"mother") !== false || stristr($haystack,"father") !== false))) {
+        $relHH = "7 - Tatay/Nanay";
+      } else {
+        $relHH = "8 - Other Relative";
+      }
+    } else {
+      $relHH = "8 - Other Relative";
+    }
+    return $relHH;
+  }
+
+  echo findRelHH("");
   // echo findSector(replaceSpecialCharacter("/","05-04-1970"),"A");
 ?>
