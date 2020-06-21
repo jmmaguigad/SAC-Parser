@@ -22,6 +22,17 @@ function formatBarcodeNumber($psgc,$barcode){
 
 // Date
 function createDate($date){
+  $arrMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+  $flag = 0;
+  foreach($arrMonths as $month){
+    if (stristr($date,$month) !== false){
+      $flag = 1;
+    break;
+    }
+  }
+  if ($flag == 1){
+    $date = date("m/d/Y",strtotime($date));
+  }
   $date = preg_replace('#/+#','/',str_replace("-","/",$date));
   if (!empty($date)){
     if (strlen($date) < 9){
@@ -44,6 +55,25 @@ function createDate($date){
 
 function formatDate($remainingdigit,$appenddigit,$twodigit){
   return $remainingdigit.$appenddigit.$twodigit;
+}
+
+//calculating buwanang kita
+function getBuwanangKita($strKita){
+  $kita = round(preg_replace('/[^0-9.]/','', $strKita));
+  if (!empty($kita)){
+      if (stristr($strKita,"day") !== false || stristr($strKita,"araw") !== false){
+          $returnKita = $kita * 22;
+      } else if (stristr($strKita,"week") !== false){
+          $returnKita = $kita * 4;
+      } else if (stristr($strKita,"harvest") !== false){
+          $returnKita = $kita / 3;
+      } else {
+          $returnKita = $kita;
+      }
+  } else {
+      $returnKita = 0;
+  }
+  return round($returnKita);
 }
 
 // URI ng ID
@@ -137,13 +167,37 @@ function findSector($birthday,$kasarian,$haystack){
   return $sector;
 }
 
+function findKondisyonNgKalusugan($haystack){
+  if (!empty($haystack)){
+    if (strlen($haystack) > 1){
+      $haystack = substr($haystack,1,1);
+      if(stristr($haystack,"puso") !== false || firstCharacter($haystack) == "1") {
+        $kalusugan = "1 - Sakit sa Puso";
+      } else if(stristr($haystack,"presyo") !== false || stristr($haystack,"blood") !== false || firstCharacter($haystack) == "2") {
+        $kalusugan = "2 - Altapresyon";              
+      } else if(stristr($haystack,"baga") !== false || firstCharacter($haystack) == "3") {
+        $kalusugan = "3 - Sakit sa baga";
+      } else if(stristr($haystack,"betes") !== false || stristr($haystack,"diyabetis") !== false || firstCharacter($haystack) == "4") {
+        $kalusugan = "4 - Diyabetis";
+      } else if(stristr($haystack,"cancer") !== false || stristr($haystack,"kanser") !== false || firstCharacter($haystack) == "5") {
+        $kalusugan = "5 - Kanser";
+      } else {
+        $kalusugan = "0";
+      }      
+    }
+  } else {
+    $kalusugan = "0";
+  }
+  return $kalusugan;
+}
+
 function findRelHH($haystack){
   if (!empty($haystack)){
-    if(stristr($haystack,"puno") !== false || stristr($haystack,"pamilya") !== false || firstCharacter($haystack) == "1") {
+    if(stristr($haystack,"puno") !== false || stristr($haystack,"head") !== false || stristr($haystack,"pamilya") !== false || firstCharacter($haystack) == "1") {
       $relHH = "1 - Puno ng Pamilya";
-    } else if(stristr($haystack,"asawa") !== false || stristr($haystack,"mister") !== false || stristr($haystack,"misis") !== false ||  stristr($haystack,"live") !== false || firstCharacter($haystack) == "2" || firstCharacter($haystack) == "2") {
+    } else if(stristr($haystack,"asawa") !== false || stristr($haystack,"mister") !== false || stristr($haystack,"misis") !== false ||  stristr($haystack,"live") !== false || stristr($haystack,"wife") !== false || stristr($haystack,"husband") !== false || firstCharacter($haystack) == "2") {
       $relHH = "2 - Asawa";
-    } else if(stristr($haystack,"anak") !== false || firstCharacter($haystack) == "3") {
+    } else if(stristr($haystack,"anak") !== false || stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false || firstCharacter($haystack) == "3") {
       $relHH = "3 - Anak";
     } else if (stristr($haystack,"kapatid") !== false || firstCharacter($haystack) == "4" || stristr($haystack,"brother") !== false || stristr($haystack,"sister") !== false) {
       if (stristr($haystack,"law") !== false) {
@@ -153,8 +207,10 @@ function findRelHH($haystack){
       }
     } else if (stristr($haystack,"bayaw") !== false || stristr($haystack,"hipag") !== false || firstCharacter($haystack) == "5") {
       $relHH = "5 - Bayaw o Hipag";
-    } else if (stristr($haystack,"apo") !== false || (stristr($haystack,"grand") !== false && (stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false))) {
-      $relHH = "6 - Apo";
+    } else if (stristr($haystack,"apo") !== false || (stristr($haystack,"grand") !== false)) {
+      if (stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false) {
+        $relHH = "6 - Apo";
+      }
     } else if (stristr($haystack,"tatay") !== false || stristr($haystack,"nanay") !== false || (stristr($haystack,"law") !== false && (stristr($haystack,"mother") !== false || stristr($haystack,"father") !== false))) {
       $relHH = "7 - Tatay/Nanay";
     } else {
@@ -176,6 +232,7 @@ if ($_POST){
   $arrayDups = array();
   // storage of barcode for household head
   $hhbarcode = "";
+  $row = 1;
   if (($handle) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
       $num = count($data);
@@ -197,6 +254,9 @@ if ($_POST){
             } else {
               $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$hhbarcode);
             }
+            if ($data[0] == "H"){
+              $arrayUnique[] = array_push($arrayUnique,$data[$c]);
+            }
           } else if ($c == 6){
             $data[$c] = findRelHH($data[$c]);
           } else if ($c == 7){ //date
@@ -208,9 +268,7 @@ if ($_POST){
                 $data[17] = 0;
                 $data[19] = "-";
               } else {
-                if (is_int($data[17]) == false) {
-                  $data[17] = 0;
-                }
+                $data[17] = getBuwanangKita($data[17]);
               }
             } else {
               if ($data[$c] == "" || $data[$c] == "-") {
@@ -220,11 +278,13 @@ if ($_POST){
               }
             }
           } else if ($c == 10){ //sektor
-            $data[$c] = findSector($data[7],$data[8],$data[$c]);
+            if ($row > 1){
+              $data[$c] = findSector($data[7],$data[8],$data[$c]);
+            }
           } else if ($c == 11){ //kondisyon ng kalusugan
-            if ($data[$c] == "") {
-              $data[$c] = 0;
-            } 
+            if ($row > 1){
+              $data[$c] = findKondisyonNgKalusugan($data[$c]);
+            }
           } else if ($c == 12){ //psgc brgy code
             if (firstCharacter($data[$c]) != 0) {
               $data[$c] = "0".$data[$c];
@@ -281,10 +341,12 @@ if ($_POST){
             }
           }
         }
-      fputcsv($fp, $data);
+      fputcsv($fp, $data);//arrayUnique  
+      $row++;
     }
     fclose($handle);
     ob_flush();
+    exit();
   }
   $end = microtime(TRUE);
 }  
