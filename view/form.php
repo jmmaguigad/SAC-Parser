@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/normalize.css">
+  <link rel="stylesheet" href="css/skeleton.css">
+  <link rel="stylesheet" href="css/custom.css">  
+</head>
+<body>
+<div class="container">
+<div class="row">
+    <div class="eight columns">
+      <div class="docs-section" style="border-right:5px solid #000;height:100vh;">
+        <h6 class="docs-header">SAC CSV Sanitizer 1.0</h6>
+        <p style="margin-right:15px;text-align:justify;"><b>Disclaimer:</b> This program does not solve problems regarding duplicate barcodes, yet it can detect the occurrence of such a scenario. On the other hand, the creation of this program aims to solve problems that were frequently occurring during the uploading process. Please file an issue on the projects Github repository if you'll find bugs or glitches. Also, you can contribute by pulling some requests. :D
+        </p>
+        <form action="" method="POST" enctype="multipart/form-data">
+          <div class="row">
+            <div class="six columns">
+              <label for="file_sanitize">Municipality PSG Code</label>
+              <input class="u-full-width" type="text" name="psgc">      
+            </div>
+            <div class="six columns">
+              <label for="file_sanitize">File to be Sanitized</label>
+              <input class="u-full-width" type="file" id="file" name="file">      
+            </div>
+          </div>
+          <button class="button" type="button" id="validate" name="validate">Check Duplicate</button>
+          <input class="button-primary" type="submit" name="submit" value="Perform Sanitize"> 
+        </form>
+      </div>  
+    </div>
+    <div class="four columns">
+      <div class="docs-section" style="border:1px solid #dedede;padding:6px 12px;margin-top:20px;border-radius:5px;">
+        <h6 class="docs-header">Program Flow:</h6>
+        <p><b>1.</b> First, fill-out the municipality PSG code and select the CSV file for checking. Then check for duplicates by clicking the Check Duplicate button..
+        <br/><b>2.</b> Second, after removing the duplicate households, you can now proceed to the data cleansing part by clicking the perform sanitize button. Please take note of the disclaimer.  The first step and some scenarios need human intervention.</p>
+        <h6 class="docs-header">Duplicate Barcode Result:</h6>
+        <p id="result">It is the area where the results for the checking of duplicate barcodes will show.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+<script type="text/javascript" src="js/jquery.min.js"></script>
+<script type="text/javascript" src="js/script.js"></script>
+</html>
