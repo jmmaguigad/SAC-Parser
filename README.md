@@ -1,8 +1,16 @@
-# SAC Parser
-A CSV parsing program for SAC data coming from LGUs. This program is still on its development stage. 
+![SAC-Parser Image](img/Screenshot_Project.png)
+
+## Table of Contents
+
+- [What is SAC Parser](#what-is-sac-parser)
+- [How to use it](#how-to-use-it)
+- [Todo](#todo)
+
+# What is SAC Parser
+>A CSV parsing program for SAC data coming from LGUs. This program is still on its development stage. 
 
 ## How to use it?
-You need to have a web server to set-up it quickly, you can use [usbwebserver](https://usbwebserver.yura.mk.ua/)
+>You need to have a web server to set-up it quickly, you can use [usbwebserver](https://usbwebserver.yura.mk.ua/)
 
 ## TODO
 - [X] Checked barcode duplicates
