@@ -1,3 +1,5 @@
+# SAC CSV PARSER PROGRAM
+
 ![SAC-Parser Image](img/Screenshot_Project.png)
 
 ## Table of Contents
@@ -6,10 +8,10 @@
 - [How to use it](#how-to-use-it)
 - [Todo](#todo)
 
-# What is SAC Parser
+### What is SAC Parser
 >A CSV parsing program for SAC data coming from LGUs. This program is still on its development stage. 
 
-# How to use it?
+### How to use it?
 >These are the steps needed to make sac parser running on your local machine:
 1. You need to [download](https://github.com/jmmaguigad/SAC-Parser/archive/master.zip) the program.
 2. Then, you need to have a web server to set-up it quickly, you can use [usbwebserver](https://usbwebserver.yura.mk.ua/).
@@ -18,7 +20,7 @@
 5. It is recommended that before performing sanitization or cleansing you need to check duplicates first. 
 6. Also, it is recommended to remove duplicate barcodes because this will be returned to the LGU. After removing duplicates, you can now perform cleansing by clicking the Perform Sanitize button. A cleansed data by means of a csv file will be downloaded automatically.
 
-# TODO
+### TODO
 - [X] Checked barcode duplicates
 - [X] Sanitize and format birthdate
 - [X] Relationship to the household head, Uri ng ID, Sector and Kondisyon ng Kalusugan Finder
