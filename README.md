@@ -18,7 +18,7 @@
 3. Copy the sac-parser folder in the root folder of the usbwebserver.
 4. Then, access the program by running the usbwebserver.exe and enabling the Apache by navigating to Apache > Start.
 5. It is recommended that before performing sanitization or cleansing you need to check duplicates first. 
-6. Also, it is recommended to remove duplicate barcodes because this will be returned to the LGU. After removing duplicates, you can now perform cleansing by clicking the Perform Sanitize button. A cleansed data by means of a csv file will be downloaded automatically.
+6. Also, it is recommended to remove duplicate barcodes because this will be returned to the LGU. After removing duplicates, you can now perform cleansing by clicking the Perform Sanitize button. A cleansed data by means of a csv file will be downloaded automatically. Then, you can now upload the csv file in the SAC Uploading website.
 
 ### TODO
 - [X] Checked barcode duplicates
