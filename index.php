@@ -182,4 +182,4 @@ if ($_POST){
   $end = microtime(TRUE);
 }  
 ?>
-<?php include_once 'view/form.php'; ?>
+<?php include_once 'view/form.html'; ?>
