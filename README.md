@@ -29,7 +29,10 @@
 - [X] Cellphone number checker
 - [X] Fill-out blank Household head fields such as Benef UCT, Benef 4Ps, Katutubo, Katutubo Name, Bene Others, Others Name, Brgy. Capt and MSWDO
 - [X] Compute buwanang kita includes words with per day, per week etc.
-**Version 1.1**
+
+
+**Version 1.1 (Currently working on this)**
+>This will be available on the next release of the program
 - [ ] Removed special characters excluding dash for names
 - [X] Removed extra blank rows created
 - [X] Reformat registration dates
