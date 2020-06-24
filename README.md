@@ -20,7 +20,8 @@
 5. It is recommended that before performing sanitization or cleansing you need to check duplicates first. 
 6. Also, it is recommended to remove duplicate barcodes because this will be returned to the LGU. After removing duplicates, you can now perform cleansing by clicking the Perform Sanitize button. A cleansed data by means of a csv file will be downloaded automatically. Then, you can now upload the csv file in the SAC Uploading website.
 
-### TODO
+### DONE/TODO
+**Version 1.0**
 - [X] Checked barcode duplicates
 - [X] Sanitize and format birthdate
 - [X] Relationship to the household head, Uri ng ID, Sector and Kondisyon ng Kalusugan Finder
@@ -28,4 +29,7 @@
 - [X] Cellphone number checker
 - [X] Fill-out blank Household head fields such as Benef UCT, Benef 4Ps, Katutubo, Katutubo Name, Bene Others, Others Name, Brgy. Capt and MSWDO
 - [X] Compute buwanang kita includes words with per day, per week etc.
+**Version 1.1**
 - [ ] Removed special characters excluding dash for names
+- [X] Removed extra blank rows created
+- [X] Reformat registration dates
