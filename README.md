@@ -6,7 +6,7 @@
 
 - [What is SAC Parser](#what-is-sac-parser)
 - [How to use it](#how-to-use-it)
-- [Done/Todo](#done/todo)
+- [For Action](#for-action)
 
 ### What is SAC Parser
 >A CSV parsing program for SAC data coming from LGUs. This program is still on its development stage. 
@@ -20,7 +20,7 @@
 5. It is recommended that before performing sanitization or cleansing you need to check duplicates first. 
 6. Also, it is recommended to remove duplicate barcodes because this will be returned to the LGU. After removing duplicates, you can now perform cleansing by clicking the Perform Sanitize button. A cleansed data by means of a csv file will be downloaded automatically. Then, you can now upload the csv file in the SAC Uploading website.
 
-### DONE/TODO
+### For Action
 **Version 1.0**
 - [X] Checked barcode duplicates
 - [X] Sanitize and format birthdate
