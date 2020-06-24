@@ -1,4 +1,7 @@
 <?php
+// $date = DateTime::createFromFormat('d/m/Y', "24/04/2012");
+// echo $date->format('Y-m-d');
+
 session_start();
 $start = microtime(TRUE);
 
@@ -17,7 +20,8 @@ if ($_POST){
   $row = 1;
   if (($handle) !== FALSE) {
     while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-      $num = count($data);
+      if (count(array_filter($data)) !== 0){
+        $num = count($data);
         for ($c=0; $c < $num; $c++) {
           if ($c == 0){ //row indicator
             if (empty($data[0])) {
@@ -152,6 +156,10 @@ if ($_POST){
               $data[24] = "";
               $data[25] = "";              
             }
+          } else if ($c == 26){
+            if ($row > 1){
+              $data[$c] = registrationDateFormat($data[$c]);
+            }
           } else if ($c == 27){
             if ($data[0] == "H" && empty($data[27])){
               if (count($_SESSION['brgycapt']) > 1){
@@ -172,8 +180,9 @@ if ($_POST){
             }
           }
         }
-      fputcsv($fp, $data);//arrayUnique  
-      $row++;
+        fputcsv($fp, $data);//arrayUnique  
+        $row++;
+      }
     }
     fclose($handle);
     ob_flush();
