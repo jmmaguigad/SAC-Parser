@@ -64,7 +64,15 @@
     return $remainingdigit.$appenddigit.$twodigit;
   }
 
-    
+  function registrationDateFormat($date){
+    $sanitizeddate = explode("/",$date);
+    if ($sanitizeddate[0] > 12){
+        $sanitizeddate[0] = ($sanitizeddate[0] < 10 && strlen($sanitizeddate[0] < 2)) ? "0".$sanitizeddate[0] : $sanitizeddate[0];
+        $sanitizeddate[1] = ($sanitizeddate[1] < 10 && strlen($sanitizeddate[1] < 2)) ? "0".$sanitizeddate[1] : $sanitizeddate[1];
+        $returndate = $sanitizeddate[1]."/".$sanitizeddate[0]."/".$sanitizeddate[2];
+    }
+    return $returndate;    
+  }    
   // find relationship to household head
   function findRelHH($haystack){
     if (!empty($haystack)){
