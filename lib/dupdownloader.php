@@ -36,6 +36,4 @@
     }
 
     fclose($file);
-
-    // array_map('unlink', array_filter((array) array_merge(glob("../tmp/*"))));
 ?>
