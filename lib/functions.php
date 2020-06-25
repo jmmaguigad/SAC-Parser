@@ -40,39 +40,59 @@
     if ($flag == 1){
       $date = date("m/d/Y",strtotime($date));
     }
-    $date = preg_replace('#/+#','/',str_replace("-","/",$date));
-    if (!empty($date)){
-      if (strlen($date) < 9){
-        $twodigits = substr($date,strlen($date)-(strlen($date)+2),2);
-        $remainingdigits = trim(str_replace($twodigits,"",$date));
-        if ($twodigits > 20 && $twodigits < 100){
-          $appenddigits = 19;
+    $specialchar = [" ","-","`","'"];
+    $date = preg_replace('#/+#','/',str_replace($specialchar,"/",trim($date)));
+    $sanitizeddate = explode("/",$date);
+    if (strlen($sanitizeddate[2]) == 2){
+        $year = '20'.$sanitizeddate[2];
+        if ($sanitizeddate[0] > 12) {
+            $month = $sanitizeddate[1];
+            $day = $sanitizeddate[0];
         } else {
-          $appenddigits = 20;
+            $month = $sanitizeddate[0];
+            $day = $sanitizeddate[1];
         }
-        $returnedDate = formatDate($remainingdigits,$appenddigits,$twodigits);
-      } else {
-        $returnedDate = $date;
-      }    
-    } else {
-      $returnedDate = "";
-    }
-    return $returnedDate;
+        if ($year > date('Y')){
+            $year = $year - 100;
+        }
+        $returndate = $month."/".$day."/".$year;
+    } else if (strlen($sanitizeddate[2]) == 4){
+        if ($sanitizeddate[0] > 12){
+            $returndate = $sanitizeddate[1]."/".$sanitizeddate[0]."/".$sanitizeddate[2];
+        } else {
+            $returndate = $date;
+        }
+    } else{
+        $returndate = "";
+    }    
+    return $returndate;
   }
   
-  function formatDate($remainingdigit,$appenddigit,$twodigit){
-    return $remainingdigit.$appenddigit.$twodigit;
-  }
-
   function registrationDateFormat($date){
     $sanitizeddate = explode("/",$date);
-    if ($sanitizeddate[0] > 12){
-        $sanitizeddate[0] = ($sanitizeddate[0] < 10 && strlen($sanitizeddate[0] < 2)) ? "0".$sanitizeddate[0] : $sanitizeddate[0];
-        $sanitizeddate[1] = ($sanitizeddate[1] < 10 && strlen($sanitizeddate[1] < 2)) ? "0".$sanitizeddate[1] : $sanitizeddate[1];
-        $returndate = $sanitizeddate[1]."/".$sanitizeddate[0]."/".$sanitizeddate[2];
+    $substr1 = intval($sanitizeddate[0]);
+    if ($substr1 > 12){
+        $newdate = explode("/",$sanitizeddate[1]."/".$sanitizeddate[0]."/2020");
+        if ($substr1 != 4){
+            $returndate = "04/".$newdate[1]."/2020";
+        } else {
+            $returndate = $newdate;
+        }        
+    } else {
+        if ($substr1 != 4){
+            $returndate = "04/".$sanitizeddate[1]."/2020";
+        } else {
+            $returndate = $date;
+        }
     }
-    return $returndate;    
-  }    
+    return $returndate;
+  }
+
+  function generateRegistrationDate(){
+    $rangeDate = rand(strtotime("Apr 01 2020"), strtotime("Apr 30 2020"));
+    return date("m/d/Y", $rangeDate);
+  }
+
   // find relationship to household head
   function findRelHH($haystack){
     if (!empty($haystack)){
@@ -233,5 +253,38 @@
       $kalusugan = "0";
     }
     return $kalusugan;
+  }
+
+  // trabaho checker
+  function checkTrabaho($haystack){
+    if (!empty($haystack)){
+      if(stristr($haystack,"student") !== false || (stristr($haystack,"house") !== false && stristr($haystack,"wife") !== false) || (stristr($haystack,"kasa") !== false && stristr($haystack,"bahay") !== false) || stristr($haystack,"tambay") !== false) {
+        $trabaho = "-";
+      } else {
+        $trabaho = strtoupper($haystack);
+      }
+    } else {
+      $trabaho = "-";
+    }
+    return $trabaho;
+  }
+
+  function checkKasarian($haystack){
+    if (!empty($haystack)){
+      if(stristr($haystack,"male") !== false || firstCharacter($haystack) == "m" || firstCharacter($haystack) == "M") {
+        $kasarian = "M";
+      } else if(stristr($haystack,"female") !== false || firstCharacter($haystack) == "f" || firstCharacter($haystack) == "F") { 
+        $kasarian = "F";
+      }
+    } else {
+      $kasarian = "M";
+    }
+    return $kasarian;
+  }  
+
+  function cleanName($name){
+    $specialchar = ["\\",",",".","/","`","'"];
+    $name = str_replace($specialchar,"",trim($name));
+    return $name;
   }
 ?>
