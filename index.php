@@ -40,10 +40,14 @@ if ($_POST){
                 }
               }else if ($c == 1){ //barcode number
                 if ($row > 1){
+                  $psgc = $_POST['psgc'];
+                  if (firstCharacter($psgc) != 0){
+                    $psgc = "0".$psgc;
+                  }
                   if (!empty($data[1])){
-                    $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$data[$c]);
+                    $data[$c] = formatBarcodeNumber(trim($psgc),$data[$c]);
                   } else {
-                    $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$hhbarcode);
+                    $data[$c] = formatBarcodeNumber(trim($psgc),$hhbarcode);
                   }
                 }
               } else if ($c == 2 || $c == 3 || $c == 4 || $c == 5){
