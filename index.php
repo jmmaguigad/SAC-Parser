@@ -45,9 +45,6 @@ if ($_POST){
                   } else {
                     $data[$c] = formatBarcodeNumber(trim($_POST['psgc']),$hhbarcode);
                   }
-                  if ($data[0] == "H"){
-                    $arrayUnique[] = array_push($arrayUnique,$data[$c]);
-                  }
                 }
               } else if ($c == 2 || $c == 3 || $c == 4 || $c == 5){
                 if ($row > 1){
@@ -62,6 +59,9 @@ if ($_POST){
               } else if ($c == 7){ //date
                 if ($row > 1){
                   $data[$c] = createDate($data[$c]);
+                  if (empty(trim($data[$c])) && ($data[22] == "Y" || !empty($data[23]))){
+                    $data[$c] = "07/01/1980";
+                  }
                 }
               } else if ($c == 8){ //Kasarian
                 if ($row > 1){
