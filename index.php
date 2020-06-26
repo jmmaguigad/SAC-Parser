@@ -78,7 +78,11 @@ if ($_POST){
                     } else {
                       $data[17] = getBuwanangKita($data[17]);
                       if (!empty(trim($data[19]))){
-                        $data[19] = $data[19];
+                        if (trim($data[19]) != "-"){
+                          $data[19] = $data[19];
+                        } else {
+                          $data[19] = "NA";
+                        }
                       } else {
                         $data[19] = "NA";
                       }
