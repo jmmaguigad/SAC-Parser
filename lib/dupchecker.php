@@ -5,14 +5,11 @@ include_once 'functions.php';
 try{
     if (isset($_FILES) && !empty($_FILES)){
         $mimes = array("application/vnd.ms-excel","text/plain","text/csv");
-        // echo in_array($_FILES['forsanitizefile']['type'],$mimes);
         if(in_array($_FILES['forsanitizefile']['type'],$mimes)){
             $start = microtime(TRUE);    
             $handle = fopen($_FILES["forsanitizefile"]["tmp_name"], "r");
-            // $_SESSION['file_scanned'] = $_FILES["forsanitizefile"]["tmp_name"];
             $row = 1;
             $tag = [];
-            $dateofreg = "";
             $nameofbrgycapt = []; 
             $nameofmswdo = "";
             if (($handle) !== FALSE) {
@@ -22,9 +19,6 @@ try{
                         $tag[$data[1]]++;
                     } else {
                         $tag[$data[1]] = 1;
-                    }
-                    if (!empty($data[26])){
-                        $dateofreg = $data[26];
                     }
                     if (!empty($data[27]) && !in_array($data[27],$nameofbrgycapt)) {
                         $nameofbrgycapt[$data[12]] = $data[27];
@@ -58,11 +52,7 @@ try{
             }
             $_SESSION['brgycapt'] = $nameofbrgycapt;
             $_SESSION['mswdo'] = $nameofmswdo;
-            if (!empty($dateofreg)) {
-                $_SESSION['datereg'] = registrationDateFormat($dateofreg);
-            } else {
-                $_SESSION['datereg'] = generateRegistrationDate();
-            }
+            $_SESSION['datereg'] = generateRegistrationDate();            
             echo "</p>";  
         }       
     } else {
@@ -71,7 +61,7 @@ try{
         echo "&#8594; <b>Incorrect mime/type detected, please select csv file.</b>";
         echo "</p>";
     }   
-}catch(\PDOException $e){
-    echo $e->getMessage();
+}catch(Exception $e){
+    echo "Caught Exception: ". $e->getMessage() . "\n";
 }
 ?>
