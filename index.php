@@ -27,17 +27,17 @@ if ($_POST){
           if (!in_array(trim($data[1]),$lista)){
             $num = count($data);
             for ($c=0; $c < $num; $c++) {
+              $psgcbrgy = cleanPSGC($_SESSION['brgypsgc']);//$data[12]
               if ($c == 0){ //row indicator
                 if (empty($data[0])) {
-                  if(stristr($haystack,"puno") !== false || firstCharacter($haystack) == "1"){
+                  if((stristr($haystack,"puno") !== false || firstCharacter($haystack) == "1")){ //|| empty($data[0])
                     $data[$c] = "H";
                   } else {
                     $data[$c] = "M";
                   }
-                }
-                if ($data[$c] == "H"){
-                  $hhbarcode = $data[1];
-                }
+                } else {
+                  $data[$c] = trim($data[$c]);
+                }                
               }else if ($c == 1){ //barcode number
                 if ($row > 1){
                   $psgc = $_POST['psgc'];
@@ -46,6 +46,7 @@ if ($_POST){
                   }
                   if (!empty($data[1])){
                     $data[$c] = formatBarcodeNumber(trim($psgc),$data[$c]);
+                    $hhbarcode = $data[1];
                   } else {
                     $data[$c] = formatBarcodeNumber(trim($psgc),$hhbarcode);
                   }
@@ -96,6 +97,9 @@ if ($_POST){
                       $data[$c] = "-";
                       $data[17] = "";
                       $data[19] = "";  
+                    } else {
+                      // solution for bug: proper formatting of kita of member
+                      $data[17] = 0;
                     }
                   }  
                 }
@@ -108,9 +112,9 @@ if ($_POST){
                   $data[$c] = findKondisyonNgKalusugan($data[$c]);
                 }
               } else if ($c == 12){ //psgc brgy code
-                if (firstCharacter($data[$c]) != 0) {
+                if (firstCharacter($psgcbrgy) != 0) {
                   if ($data[0] == "H"){
-                    $data[$c] = str_pad($data[$c], 9, '0', STR_PAD_LEFT);                
+                    $data[$c] = str_pad($psgcbrgy, 9, '0', STR_PAD_LEFT);                
                   }
                 } 
               } else if ($c == 13 || $c == 14){ //tirahan at kalye
@@ -148,30 +152,36 @@ if ($_POST){
                 } if ($data[0] == "M"){
                   $data[$c] = "-";
                 }
-              } else if ($c == 22){ //katutubo => katutubo name is dependent while bene others is dependent on others name...
+              } else if ($c == 22){ //katutubo
                 if ($data[0] == "H"){
-                  if ($c == 22) {
-                    if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
+                  if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
+                    $data[$c] = "N";
+                    $data[23] = "-";
+                  } else {
+                    if ($data[23] == "" || $data[23] == "-"){
                       $data[$c] = "N";
                       $data[23] = "-";
                     } else {
-                      if ($data[23] == "" || $data[23] == "-"){
-                        $data[$c] = "N";
-                        $data[23] = "-";
-                      } else {
-                        $data[$c] = "Y";
-                      }
+                      $data[$c] = "Y";
                     }
                   }
                 } else if ($data[0] == "M"){
                   $data[22] = "";
                   $data[23] = "";             
                 }
-              } else if ($c == 23){
-                if (($data[0] == "H" && $data[22] == "N") || ($data[0] == "M")){
-                  $data[$c] = "-"; 
+              } else if ($c == 23){ //katutubo name
+                if ($row > 1){
+                  if ($data[0] == "H"){
+                    if ($data[22] == "N" || strlen($data[$c]) <= 1) {
+                      $data[$c] = "-"; 
+                      $data[22] = "N";
+                    }
+                  } else {
+                    $data[$c] = "-"; 
+                    $data[22] = "-";
+                  }
                 }
-              } else if ($c == 24){
+              } else if ($c == 24){ //others
                 if ($data[0] == "H"){
                   if ($c == 24){
                     if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
@@ -189,6 +199,18 @@ if ($_POST){
                 } else if ($data[0] == "M"){
                   $data[24] = "";
                   $data[25] = "";              
+                }
+              } else if ($c == 25){ //others name
+                if ($row > 1){
+                  if ($data[0] == "H"){
+                    if ($data[24] == "N" || strlen($data[$c]) <= 1) {
+                      $data[$c] = "-"; 
+                      $data[24] = "N";
+                    }
+                  } else {
+                    $data[$c] = "-"; 
+                    $data[24] = "-";
+                  }
                 }
               } else if ($c == 26){ //petsa ng pagrehistro
                 if ($row > 1){
