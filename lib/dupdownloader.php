@@ -32,7 +32,9 @@
     $_SESSION['duplist'] = $duplist;
 
     foreach($duplist as $list) {  
-        fputcsv($fpdup, $list);  
+        if (!empty(trim($list[1]))) {
+            fputcsv($fpdup, $list);  
+        }
     }
 
     fclose($file);
