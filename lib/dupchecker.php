@@ -12,6 +12,8 @@ try{
             $tag = [];
             $nameofbrgycapt = []; 
             $nameofmswdo = "";
+            $brgypsgc = "";
+            $regdate = "";
             if (($handle) !== FALSE) {
               while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                 if ($data[0] == "H"){
@@ -19,6 +21,15 @@ try{
                         $tag[$data[1]]++;
                     } else {
                         $tag[$data[1]] = 1;
+                    }
+                    if (isset($data[12])){
+                        $brgypsgc = cleanPSGC($data[12]);
+                    }
+                    if (isset($data[26])){
+                        $date = createDate($data[26]);
+                        if (validateDate($date) == 1 && date('m',strtotime($date)) == 4){
+                            $regdate = $date;
+                        }
                     }
                     if (!empty($data[27]) && !in_array($data[27],$nameofbrgycapt)) {
                         $nameofbrgycapt[$data[12]] = $data[27];
@@ -43,7 +54,7 @@ try{
             if (count($tag) > 0) {
                 $_SESSION['tag'] = $tag;
                 foreach ($tag as $key => $value) {
-                    if ($value > 1){
+                    if ($value > 1 && $key != ""){
                         // output in the result area
                         echo "&#8594; <b>$key</b>". " = ".$value.' occurence'.'<br/>'; 
                     }
@@ -52,7 +63,12 @@ try{
             }
             $_SESSION['brgycapt'] = $nameofbrgycapt;
             $_SESSION['mswdo'] = $nameofmswdo;
-            $_SESSION['datereg'] = generateRegistrationDate();            
+            if (!empty($brgypsgc) && $brgypsgc != ""){
+                $_SESSION['datereg'] = $regdate;
+            } else {
+                $_SESSION['datereg'] = generateRegistrationDate();
+            }
+            $_SESSION['brgypsgc']  = $brgypsgc;        
             echo "</p>";  
         }       
     } else {
