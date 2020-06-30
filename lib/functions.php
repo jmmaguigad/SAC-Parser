@@ -27,7 +27,7 @@
     return 'PH-COVID-'.$psgc.'-'.$returnval;
   }
   
-  // Date
+  // Date for Birthday
   function createDate($date){
     $arrMonths = ["January","February","March","April","May","June","July","August","September","October","November","December"];
     $flag = 0;
@@ -234,7 +234,7 @@
   function findKondisyonNgKalusugan($haystack){
     if (!empty($haystack)){
       if (strlen($haystack) >= 1){
-        $haystack = substr($haystack,1,1);
+        // $haystack = substr($haystack,1,1);
         if(stristr($haystack,"puso") !== false || firstCharacter($haystack) == "1") {
           $kalusugan = "1 - Sakit sa Puso";
         } else if(stristr($haystack,"presyo") !== false || stristr($haystack,"blood") !== false || firstCharacter($haystack) == "2") {
@@ -287,4 +287,15 @@
     $name = str_replace($specialchar,"",trim($name));
     return $name;
   }
+
+  // psgc
+  function cleanPSGC($psgc){
+    return preg_replace('/[^0-9]/','',$psgc);
+  }
+
+  // simple checking of date (for registration date)
+  function validateDate($date, $format = 'm/d/Y'){
+    $d = DateTime::createFromFormat($format, $date);
+    return $d && $d->format($format) === $date;
+  }  
 ?>
