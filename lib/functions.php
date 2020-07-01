@@ -94,31 +94,33 @@
   }
 
   // find relationship to household head
-  function findRelHH($haystack){
-    if (!empty($haystack)){
-      if(stristr($haystack,"puno") !== false || stristr($haystack,"head") !== false || stristr($haystack,"pamilya") !== false || firstCharacter($haystack) == "1") {
-        $relHH = "1 - Puno ng Pamilya";
-      } else if(stristr($haystack,"asawa") !== false || stristr($haystack,"mister") !== false || stristr($haystack,"misis") !== false ||  stristr($haystack,"live") !== false || stristr($haystack,"wife") !== false || stristr($haystack,"husband") !== false || firstCharacter($haystack) == "2") {
-        $relHH = "2 - Asawa";
-      } else if(stristr($haystack,"anak") !== false || stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false || firstCharacter($haystack) == "3") {
-        $relHH = "3 - Anak";
-      } else if (stristr($haystack,"kapatid") !== false || firstCharacter($haystack) == "4" || stristr($haystack,"brother") !== false || stristr($haystack,"sister") !== false) {
-        if (stristr($haystack,"law") !== false) {
+  function findRelHH($indicator,$haystack){
+    if ($indicator == "H") {
+      $relHH = "1 - Puno ng Pamilya";
+    } else if ($indicator == "M") {
+      if (!empty($haystack)){
+        if(stristr($haystack,"asawa") !== false || stristr($haystack,"mister") !== false || stristr($haystack,"misis") !== false ||  stristr($haystack,"live") !== false || stristr($haystack,"wife") !== false || stristr($haystack,"husband") !== false || firstCharacter($haystack) == "2") {
+          $relHH = "2 - Asawa";
+        } else if(stristr($haystack,"anak") !== false || stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false || firstCharacter($haystack) == "3") {
+          $relHH = "3 - Anak";
+        } else if (stristr($haystack,"kapatid") !== false || firstCharacter($haystack) == "4" || stristr($haystack,"brother") !== false || stristr($haystack,"sister") !== false) {
+          if (stristr($haystack,"law") !== false) {
+            $relHH = "8 - Other Relative";
+          }else{
+            $relHH = "4 - Kapatid";
+          }
+        } else if (stristr($haystack,"bayaw") !== false || stristr($haystack,"hipag") !== false || firstCharacter($haystack) == "5") {
+          $relHH = "5 - Bayaw o Hipag";
+        } else if (stristr($haystack,"apo") !== false || (stristr($haystack,"grand") !== false && (stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false))) {
+            $relHH = "6 - Apo";
+        } else if (stristr($haystack,"tatay") !== false || stristr($haystack,"nanay") !== false || (stristr($haystack,"law") !== false && (stristr($haystack,"mother") !== false || stristr($haystack,"father") !== false))) {
+          $relHH = "7 - Tatay/Nanay";
+        } else {
           $relHH = "8 - Other Relative";
-        }else{
-          $relHH = "4 - Kapatid";
         }
-      } else if (stristr($haystack,"bayaw") !== false || stristr($haystack,"hipag") !== false || firstCharacter($haystack) == "5") {
-        $relHH = "5 - Bayaw o Hipag";
-      } else if (stristr($haystack,"apo") !== false || (stristr($haystack,"grand") !== false && (stristr($haystack,"son") !== false || stristr($haystack,"daugh") !== false))) {
-          $relHH = "6 - Apo";
-      } else if (stristr($haystack,"tatay") !== false || stristr($haystack,"nanay") !== false || (stristr($haystack,"law") !== false && (stristr($haystack,"mother") !== false || stristr($haystack,"father") !== false))) {
-        $relHH = "7 - Tatay/Nanay";
       } else {
         $relHH = "8 - Other Relative";
       }
-    } else {
-      $relHH = "8 - Other Relative";
     }
     return $relHH;
   }
@@ -289,8 +291,21 @@
   }
 
   // psgc
-  function cleanPSGC($psgc){
-    return preg_replace('/[^0-9]/','',$psgc);
+  function cleanPSGC($indicator,$psgc){
+    if (firstCharacter($psgc) != 0 && strlen($psgc) == 8) {
+      if ($indicator == "H"){
+        $returnpsgc = str_pad($psgc, 9, '0', STR_PAD_LEFT);                
+      }
+    } else if (strlen($psgc) > 9) {
+      if ($indicator == "H"){
+        $returnpsgc = preg_replace('/[^0-9]/','',$psgc);
+      }
+    } else {
+      if ($indicator == "M"){
+        $returnpsgc = "";
+      }
+    } 
+    return $returnpsgc;
   }
 
   // simple checking of date (for registration date)
