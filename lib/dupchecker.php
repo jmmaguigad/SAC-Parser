@@ -23,7 +23,7 @@ try{
                         $tag[$data[1]] = 1;
                     }
                     if (isset($data[12])){
-                        $brgypsgc = cleanPSGC($data[12]);
+                        $brgypsgc = cleanPSGC($data[0],$data[12]);
                     }
                     if (isset($data[26])){
                         $date = createDate($data[26]);
@@ -63,7 +63,7 @@ try{
             }
             $_SESSION['brgycapt'] = $nameofbrgycapt;
             $_SESSION['mswdo'] = $nameofmswdo;
-            if (!empty($brgypsgc) && $brgypsgc != ""){
+            if (!empty($regdate) && $regdate != ""){
                 $_SESSION['datereg'] = $regdate;
             } else {
                 $_SESSION['datereg'] = generateRegistrationDate();
