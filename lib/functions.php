@@ -296,7 +296,7 @@
       if ($indicator == "H"){
         $returnpsgc = str_pad($psgc, 9, '0', STR_PAD_LEFT);                
       }
-    } else if (strlen($psgc) > 9) {
+    } else if (strlen($psgc) >= 9) {
       if ($indicator == "H"){
         $returnpsgc = preg_replace('/[^0-9]/','',$psgc);
       }
