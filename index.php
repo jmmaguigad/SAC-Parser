@@ -27,7 +27,7 @@ if ($_POST){
           if (!in_array(trim($data[1]),$lista)){
             $num = count($data);
             for ($c=0; $c < $num; $c++) {
-              $psgcbrgy = cleanPSGC($_SESSION['brgypsgc']);//$data[12]
+              $psgcbrgy = $_SESSION['brgypsgc'];//$data[12]
               if ($c == 0){ //row indicator
                 if (empty($data[0])) {
                   if((stristr($haystack,"puno") !== false || firstCharacter($haystack) == "1")){ //|| empty($data[0])
@@ -57,9 +57,9 @@ if ($_POST){
                     $data[$c] = cleanName($data[$c]);
                   }
                 }
-              } else if ($c == 6){
+              } else if ($c == 6){ //relation to household head
                 if ($row > 1){
-                  $data[$c] = findRelHH($data[$c]);
+                  $data[$c] = findRelHH($data[0],$data[$c]);
                 }
               } else if ($c == 7){ //date
                 if ($row > 1){
@@ -112,11 +112,9 @@ if ($_POST){
                   $data[$c] = findKondisyonNgKalusugan($data[$c]);
                 }
               } else if ($c == 12){ //psgc brgy code
-                if (firstCharacter($psgcbrgy) != 0) {
-                  if ($data[0] == "H"){
-                    $data[$c] = str_pad($psgcbrgy, 9, '0', STR_PAD_LEFT);                
-                  }
-                } 
+                if ($row > 1){
+                  $data[$c] = $psgcbrgy;
+                }
               } else if ($c == 13 || $c == 14){ //tirahan at kalye
                 if ($data[$c] == "" && $data[0] == "H") {
                   $data[$c] = "-";
