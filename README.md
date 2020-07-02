@@ -31,8 +31,17 @@
 - [X] Compute buwanang kita includes words with per day, per week etc.
 
 
-**Version 1.1 (Currently working on this)**
->This will be available on the next release of the program
-- [ ] Removed special characters excluding dash for names
+**Version 1.1**
+- [X] Removed special characters excluding dash for names
 - [X] Removed extra blank rows created
 - [X] Reformat registration dates
+
+
+**Version 1.2**
+- Updated various functions and performed code cleansing.
+- Fixed various issues such as issues number [1](https://github.com/jmmaguigad/SAC-Parser/issues/1), [2](https://github.com/jmmaguigad/SAC-Parser/issues/2) and [3](https://github.com/jmmaguigad/SAC-Parser/issues/3).
+
+**Version 1.3**
+- Solved multiple issues raised by focals and personnel, please refer to SAC Parser Issue.
+- Added better cleansing technique for Barangay PSGC, Relationship to Household Head and other fields.
+- Important patches were included, please upgrade your version.
