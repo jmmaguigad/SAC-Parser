@@ -273,9 +273,9 @@
 
   function checkKasarian($haystack){
     if (!empty($haystack)){
-      if(stristr($haystack,"male") !== false || firstCharacter($haystack) == "m" || firstCharacter($haystack) == "M") {
+      if(stristr($haystack,"male") !== false || stristr($haystack,"lala") !== false || firstCharacter($haystack) == "m" || firstCharacter($haystack) == "M") {
         $kasarian = "M";
-      } else if(stristr($haystack,"female") !== false || firstCharacter($haystack) == "f" || firstCharacter($haystack) == "F") { 
+      } else if(stristr($haystack,"female") !== false || stristr($haystack,"baba") !== false || firstCharacter($haystack) == "f" || firstCharacter($haystack) == "F") { 
         $kasarian = "F";
       }
     } else {
