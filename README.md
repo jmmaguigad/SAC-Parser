@@ -1,6 +1,6 @@
 # SAC CSV (PARSER) SANITIZER PROGRAM v1.0
 
-![SAC-Parser Image](img/Screenshot_Project.png)
+![SAC-Parser Image](img/Screenshot_Project-updated.png)
 
 ## Table of Contents
 
