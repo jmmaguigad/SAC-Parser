@@ -1,4 +1,4 @@
-# SAC CSV (PARSER) SANITIZER PROGRAM v1.0
+# SAC CSV PARSER PROGRAM
 
 ![SAC-Parser Image](img/Screenshot_Project-updated.png)
 
