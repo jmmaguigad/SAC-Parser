@@ -10,7 +10,7 @@
 
     if (count($_SESSION['tag']) > 0) {
         foreach ($_SESSION['tag'] as $key => $value) {
-            if ($value > 1){
+            if ($value > 1 && $key != ""){
                 $searchvalue[] = $key;
             }
         }
@@ -32,7 +32,8 @@
     $_SESSION['duplist'] = $duplist;
 
     foreach($duplist as $list) {  
-        if (!empty(trim($list[1]))) {
+        // if (!empty(trim($list[1]))) {
+        if (trim($list[1])) {
             fputcsv($fpdup, $list);  
         }
     }
