@@ -29,15 +29,17 @@ if ($_POST){
             for ($c=0; $c < $num; $c++) {
               $psgcbrgy = $_SESSION['brgypsgc'];//$data[12]
               if ($c == 0){ //row indicator
-                if (empty($data[0])) {
-                  if((stristr($haystack,"puno") !== false || firstCharacter($haystack) == "1")){ //|| empty($data[0])
-                    $data[$c] = "H";
-                  } else {
-                    $data[$c] = "M";
+                  if ($row > 1){
+                    if (empty($data[0])) {
+                      if((stristr($haystack,"puno") !== false || firstCharacter($haystack) == "1")){ //|| empty($data[0])
+                        $data[$c] = "H";
+                      } else {
+                        $data[$c] = "M";
+                      }
+                    } else {
+                      $data[$c] = trim($data[$c]);
+                    }                
                   }
-                } else {
-                  $data[$c] = trim($data[$c]);
-                }                
               }else if ($c == 1){ //barcode number
                 if ($row > 1){
                   $psgc = $_POST['psgc'];
@@ -64,7 +66,7 @@ if ($_POST){
               } else if ($c == 7){ //date
                 if ($row > 1){
                   $data[$c] = createDate($data[$c]);
-                  if (empty(trim($data[$c])) && ($data[22] == "Y" || !empty($data[23]))){
+                  if (empty(trim($data[$c])) && (!empty($data[23]) && $data[23]!= "-")){
                     $data[$c] = "07/01/1980";
                   }
                 }
@@ -116,12 +118,14 @@ if ($_POST){
                   $data[$c] = $psgcbrgy;
                 }
               } else if ($c == 13 || $c == 14){ //tirahan at kalye
-                if ($data[$c] == "" && $data[0] == "H") {
-                  $data[$c] = "-";
-                } 
-                if ($data[0] == "M"){
-                  $data[$c] = "";
-                } 
+                if ($row > 1){
+                  if ($data[$c] == "" && $data[0] == "H") {
+                    $data[$c] = "-";
+                  } 
+                  if ($data[0] == "M"){
+                    $data[$c] = "";
+                  } 
+                }
               } else if ($c == 15){ //uri ng ID
                 if ($row > 1){
                   $data[$c] = findID($data[$c]);
@@ -131,41 +135,47 @@ if ($_POST){
                   $data[$c] = "-";
                 }
               } else if ($c == 18){ //cellphone number
-                $cplength = strlen($data[$c]);
-                if ($data[0] == "H"){
-                  if (($cplength == 10 && firstCharacter($data[$c]) == 9) || ($cplength == 11 && firstCharacter($data[$c]) == 0)){
-                  } else {
+                if ($row > 1){
+                  $cplength = strlen($data[$c]);
+                  if ($data[0] == "H"){
+                    if (($cplength == 10 && firstCharacter($data[$c]) == 9) || ($cplength == 11 && firstCharacter($data[$c]) == 0)){
+                    } else {
+                      $data[$c] = "-";
+                    }
+                  } if ($data[0] == "M"){
                     $data[$c] = "-";
                   }
-                } if ($data[0] == "M"){
-                  $data[$c] = "-";
                 }
               } else if ($c == 20 || $c == 21 || $c == 22){ //bene uct and 4ps
-                if ($data[0] == "H"){
-                  if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
-                    $data[$c] = "N";
-                  } else {
-                    $data[$c] = "Y";
-                  }
-                } if ($data[0] == "M"){
-                  $data[$c] = "-";
-                }
-              } else if ($c == 22){ //katutubo
-                if ($data[0] == "H"){
-                  if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
-                    $data[$c] = "N";
-                    $data[23] = "-";
-                  } else {
-                    if ($data[23] == "" || $data[23] == "-"){
+                if ($row > 1){
+                  if ($data[0] == "H"){
+                    if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
                       $data[$c] = "N";
-                      $data[23] = "-";
                     } else {
                       $data[$c] = "Y";
                     }
+                  } if ($data[0] == "M"){
+                    $data[$c] = "-";
                   }
-                } else if ($data[0] == "M"){
-                  $data[22] = "";
-                  $data[23] = "";             
+                }
+              } else if ($c == 22){ //katutubo
+                if ($row > 1){
+                  if ($data[0] == "H"){
+                    if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
+                      $data[$c] = "N";
+                      $data[23] = "-";
+                    } else {
+                      if ($data[23] == "" || $data[23] == "-"){
+                        $data[$c] = "N";
+                        $data[23] = "-";
+                      } else {
+                        $data[$c] = "Y";
+                      }
+                    }
+                  } else if ($data[0] == "M"){
+                    $data[22] = "";
+                    $data[23] = "";             
+                  }
                 }
               } else if ($c == 23){ //katutubo name
                 if ($row > 1){
@@ -180,23 +190,25 @@ if ($_POST){
                   }
                 }
               } else if ($c == 24){ //others
-                if ($data[0] == "H"){
-                  if ($c == 24){
-                    if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
-                      $data[$c] = "N";
-                      $data[25] = "-";
-                    } else {
-                      if ($data[25] == "" || $data[25] == "-"){
+                if ($row > 1){
+                  if ($data[0] == "H"){
+                    if ($c == 24){
+                      if ($data[$c] == "" || firstCharacter($data[$c]) == "N"){
                         $data[$c] = "N";
                         $data[25] = "-";
                       } else {
-                        $data[$c] = "Y";
+                        if ($data[25] == "" || $data[25] == "-"){
+                          $data[$c] = "N";
+                          $data[25] = "-";
+                        } else {
+                          $data[$c] = "Y";
+                        }
                       }
                     }
+                  } else if ($data[0] == "M"){
+                    $data[24] = "";
+                    $data[25] = "";              
                   }
-                } else if ($data[0] == "M"){
-                  $data[24] = "";
-                  $data[25] = "";              
                 }
               } else if ($c == 25){ //others name
                 if ($row > 1){
@@ -219,20 +231,24 @@ if ($_POST){
                   }
                 }
               } else if ($c == 27){ //pangalan ng punong brgy
-                if ($data[0] == "H" && empty($data[27])){
-                  if (count($_SESSION['brgycapt']) > 1){
-                    foreach ($_SESSION['brgycapt'] as $key => $value) {
-                      if ($data[12] == $key){
-                        $data[$c] = $value;
+                if ($row > 1){
+                  if ($data[0] == "H" && empty($data[27])){
+                    if (count($_SESSION['brgycapt']) > 1){
+                      foreach ($_SESSION['brgycapt'] as $key => $value) {
+                        if ($data[12] == $key){
+                          $data[$c] = $value;
+                        }
                       }
+                    } else {
+                      $data[$c] = array_values($_SESSION['brgycapt'])[0];
                     }
-                  } else {
-                    $data[$c] = array_values($_SESSION['brgycapt'])[0];
                   }
                 }
               } else if ($c == 28){ //pangalan ng lswdo
-                if ($data[0] == "H" && empty($data[28])){
-                  $data[$c] = $_SESSION['mswdo'];
+                if ($row > 1){
+                  if ($data[0] == "H" && empty($data[28])){
+                    $data[$c] = $_SESSION['mswdo'];
+                  }
                 }
               }
             }          
