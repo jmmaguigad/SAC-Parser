@@ -30,22 +30,23 @@ try{
                         } else {
                             $tag[$data[1]] = 1;
                         }
-                        if (isset($data[12])){
-                            $brgypsgc = cleanPSGC($data[0],$data[12]);
-                        }
-                        if (isset($data[26])){
-                            $date = createDate($data[26]);
-                            if (validateDate($date) == 1 && date('m',strtotime($date)) == 4){
-                                $regdate = $date;
-                            }
-                        }
-                        if (!empty($data[27]) && !in_array($data[27],$nameofbrgycapt)) {
-                            $nameofbrgycapt[$data[12]] = $data[27];
-                        }
-                        if (!empty($data[28])){
-                            $nameofmswdo = $data[28];
-                        }
                     }
+                    if (!empty($data[12])){
+                        $brgypsgc = $data[12];
+                    }
+                    if (isset($data[26])){
+                        $date = createDate($data[26]);
+                        $regdate = $date;
+                        // if (validateDate($date) == 1 && date('m',strtotime($date)) == 4){
+                        //     $regdate = $date;
+                        // }
+                    }
+                    if (!empty($data[27]) && !in_array($data[27],$nameofbrgycapt)) {
+                        $nameofbrgycapt[$data[12]] = $data[27];
+                    }
+                    if (!empty($data[28])){
+                        $nameofmswdo = $data[28];
+                    }                    
                     if (!empty($data[1])){
                         $data[1] = $data[1];
                         $hhbarcode = $data[1];
