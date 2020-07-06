@@ -7,44 +7,55 @@ try{
         $mimes = array("application/vnd.ms-excel","text/plain","text/csv");
         if(in_array($_FILES['forsanitizefile']['type'],$mimes)){
             $start = microtime(TRUE);    
-            $handle = fopen($_FILES["forsanitizefile"]["tmp_name"], "r");
+            // move file
+            $filename = rand(1000,10000).date('Y.m.d').time;
+            $_SESSION['file_scanned'] = $filename.".csv";   
+            $tempname = $_FILES["forsanitizefile"]["tmp_name"];         
+            move_uploaded_file($tempname, "../tmp/{$filename}.csv", "r");
+            
+            $origfile = fopen("../tmp/{$filename}.csv", 'w');
+            $handle = fopen($tempname, "r");
             $row = 1;
             $tag = [];
             $nameofbrgycapt = []; 
             $nameofmswdo = "";
             $brgypsgc = "";
             $regdate = "";
+            $hhbarcode = "";
             if (($handle) !== FALSE) {
-              while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
-                if ($data[0] == "H"){
-                    if (isset($tag[$data[1]])){
-                        $tag[$data[1]]++;
-                    } else {
-                        $tag[$data[1]] = 1;
-                    }
-                    if (isset($data[12])){
-                        $brgypsgc = cleanPSGC($data[0],$data[12]);
-                    }
-                    if (isset($data[26])){
-                        $date = createDate($data[26]);
-                        if (validateDate($date) == 1 && date('m',strtotime($date)) == 4){
-                            $regdate = $date;
+                while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
+                    if ($data[0] == "H"){
+                        if (isset($tag[$data[1]])){
+                            $tag[$data[1]]++;
+                        } else {
+                            $tag[$data[1]] = 1;
+                        }
+                        if (isset($data[12])){
+                            $brgypsgc = cleanPSGC($data[0],$data[12]);
+                        }
+                        if (isset($data[26])){
+                            $date = createDate($data[26]);
+                            if (validateDate($date) == 1 && date('m',strtotime($date)) == 4){
+                                $regdate = $date;
+                            }
+                        }
+                        if (!empty($data[27]) && !in_array($data[27],$nameofbrgycapt)) {
+                            $nameofbrgycapt[$data[12]] = $data[27];
+                        }
+                        if (!empty($data[28])){
+                            $nameofmswdo = $data[28];
                         }
                     }
-                    if (!empty($data[27]) && !in_array($data[27],$nameofbrgycapt)) {
-                        $nameofbrgycapt[$data[12]] = $data[27];
+                    if (!empty($data[1])){
+                        $data[1] = $data[1];
+                        $hhbarcode = $data[1];
+                    } else {
+                        $data[1] = $hhbarcode;
                     }
-                    if (!empty($data[28])){
-                        $nameofmswdo = $data[28];
-                    }
+                    fputcsv($origfile, $data);
                 }
-              }
-              fclose($handle);
+                fclose($handle);
             }
-            // move file
-            $filename = rand(1000,10000).date('Y.m.d').time;
-            $_SESSION['file_scanned'] = $filename.".csv";            
-            move_uploaded_file($_FILES["forsanitizefile"]["tmp_name"], "../tmp/{$filename}.csv");
             $end = microtime(TRUE);
             $duration = $end-$start;
             $seconds = round($duration,5); 
