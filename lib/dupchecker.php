@@ -25,8 +25,8 @@ try{
             if (($handle) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     if ($data[0] == "H"){
-                        if (isset($tag[$data[1]])){
-                            $tag[$data[1]]++;
+                        if (isset($tag[trim($data[1])])){
+                            $tag[trim($data[1])]++;
                         } else {
                             $tag[$data[1]] = 1;
                         }
@@ -54,6 +54,8 @@ try{
                         $data[1] = $hhbarcode;
                     }
                     fputcsv($origfile, $data);
+                    // $console = $tag[$data[1]];
+                    // echo "<script>console.log($console)</script>";
                 }
                 fclose($handle);
             }
