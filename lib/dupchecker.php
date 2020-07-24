@@ -25,11 +25,11 @@ try{
             if (($handle) !== FALSE) {
                 while (($data = fgetcsv($handle, 1000, ",")) !== FALSE) {
                     if ($data[0] == "H"){
-                        if (isset($tag[trim($data[1])])){
-                            $tag[trim($data[1])]++;
-                        } else {
-                            $tag[$data[1]] = 1;
-                        }
+                      if (isset($tag[trim($data[1])])){
+                          $tag[trim($data[1])]++;
+                      } else {
+                          $tag[$data[1]] = 1;
+                      }
                     }
                     if (!empty($data[12])){
                         $brgypsgc = $data[12];
